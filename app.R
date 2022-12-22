@@ -1,0 +1,78 @@
+# deploy app
+
+source("./global.R")
+
+#TODO: check in about plot order on cluster names (are obj. levels sufficient?)
+
+#----------------------- app -------------------------------
+ui <- function(){
+  
+  bootstrapPage("",
+                useShinyjs(),
+                navbarPage(title = "Maturing Zebrafish Telencephalon Atlas", #TODO: check-in on any name changes
+                           inverse = TRUE,
+                           home_description,
+                           tabPanel(title = "Integrated Telencephalon",
+                                    sh_layout_UI(id = "integrated",
+                                                 group_choices = integrated_groups,
+                                                 plot_choices = all_plots,
+                                                 cluster_names = cluster_names_forebrain_integrated
+                                    )
+                           ),
+                           tabPanel(title = "6 dpf Telencephalon",
+                                    sh_layout_UI(id = "dpf6",
+                                                 group_choices = "All",
+                                                 plot_choices = all_plots,
+                                                 cluster_names = cluster_names_dpf6
+                                    )
+                           ),
+                           tabPanel(title = "15 dpf Telencephalon",
+                                    sh_layout_UI(id = "dpf15",
+                                                 group_choices = "All",
+                                                 plot_choices = all_plots,
+                                                 cluster_names = cluster_names_dpf15
+                                    )
+                           ),
+                           tabPanel(title = "Adult Telencephalon",
+                                    sh_layout_UI(id = "adult",
+                                                 group_choices = "All",
+                                                 plot_choices = all_plots,
+                                                 cluster_names = cluster_names_adult
+                                    )
+                           ),
+                ),
+                tags$head(
+                  tags$style(HTML(".shiny-output-error-validation {
+                color: black;
+                                }")))
+  )
+}
+
+# Reminder: objects inside server function are instantiated per session...
+server <- function(input, output) {
+  
+  shinyhelper::observe_helpers(help_dir = "helpfiles", withMathJax = FALSE)
+  
+  callModule(sh_layout, id = "integrated", 
+             dataset = forebrain_integrated, 
+             UMAP_label = "Integrated Maturing Zebrafish Telencephalon",
+             group_choices = integrated_groups)
+  
+  callModule(sh_layout, id = "dpf6", 
+             dataset = dpf6, 
+             UMAP_label = "6 dpf Zebrafish Telencephalon",
+             group_choices = "All")
+  
+  callModule(sh_layout, id = "dpf15", 
+             dataset = dpf15, 
+             UMAP_label = "15 dpf Zebrafish Telencephalon",
+             group_choices = "All")
+  
+  callModule(sh_layout, id = "adult", 
+             dataset = adult, 
+             UMAP_label = "Adult Zebrafish Telencephalon",
+             group_choices = "All")
+
+}
+
+shinyApp(ui = ui, server = server)
