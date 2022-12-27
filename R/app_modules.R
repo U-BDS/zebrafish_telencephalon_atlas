@@ -118,6 +118,11 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                  
                  conditionalPanel(
                    condition = "input.plots.indexOf('Violin') > -1",
+                   
+                   checkboxInput(inputId = ns("pt_size"), 
+                                 label = "Violin plot option: Display single-cells as points", 
+                                 value = FALSE),
+                   
                    checkboxGroupInput(inputId = ns("cluster"),
                                       label = "Violin plot option: choose all or show specific clusters",
                                       choices = cluster_names,
@@ -256,9 +261,24 @@ sh_layout <- function(input, output, session, dataset, UMAP_label, assay = "RNA"
   observeEvent(input$reset, {shinyjs::reset("expression")})
   
   violin <- reactive({
-    VlnPlot_single_dataset(Seurat_object = dataset, split_type = input$group,
-                           features = update_gene(), idents = update_cluster(),
-                           assay = assay)
+    
+    #evaluate violin options
+    if (input$group != "All") {
+      split_group <- input$group
+    } else {
+      split_group <- NULL
+    }
+    
+    if (input$pt_size == FALSE) {
+      size <- 0
+    } else {
+      size <- NULL # default pt.size
+    }
+    
+    
+    VlnPlot(object = dataset, split.by = split_group,
+            features = update_gene(), idents = update_cluster(),
+            pt.size = size, assay = assay) + NoLegend()
   })
   
   
