@@ -185,7 +185,7 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
 
 #-------------------------------------------SERVER-----------------------------------------------------
 
-sh_layout <- function(input, output, session, dataset, UMAP_label, assay = "RNA", group_choices = "All") {
+sh_layout <- function(input, output, session, dataset, UMAP_label, UMAP_colors, assay = "RNA", group_choices = "All") {
   
   # only display group choices for dataset that contains anything beyond one choice (e.g.: integrated data)
   # The element will be shown if the condition evaluates to TRUE and hidden otherwise.
@@ -193,8 +193,9 @@ sh_layout <- function(input, output, session, dataset, UMAP_label, assay = "RNA"
     shinyjs::toggle(id = "group", condition = !all((group_choices == "All")))
   })
   
+  #TODO: provide option to show legend on the side or not at all...
   output$UMAP <- renderPlot({
-    DimPlot(object = dataset, reduction = "umap", label = TRUE,
+    DimPlot(object = dataset, reduction = "umap", label = TRUE, cols = UMAP_colors,
             label.size = 5) + NoLegend() + ggtitle(label = UMAP_label)
   })
   

@@ -56,21 +56,25 @@ server <- function(input, output) {
   callModule(sh_layout, id = "integrated", 
              dataset = forebrain_integrated, 
              UMAP_label = "Integrated Maturing Zebrafish Telencephalon",
+             UMAP_colors = colors,
              group_choices = integrated_groups)
   
   callModule(sh_layout, id = "dpf6", 
              dataset = dpf6, 
              UMAP_label = "6 dpf Zebrafish Telencephalon",
+             UMAP_colors = colors_dpf6,
              group_choices = "All")
   
   callModule(sh_layout, id = "dpf15", 
              dataset = dpf15, 
              UMAP_label = "15 dpf Zebrafish Telencephalon",
+             UMAP_colors = colors_df15,
              group_choices = "All")
   
   callModule(sh_layout, id = "adult", 
              dataset = adult, 
              UMAP_label = "Adult Zebrafish Telencephalon",
+             UMAP_colors = colors_adult,
              group_choices = "All")
 
 }
