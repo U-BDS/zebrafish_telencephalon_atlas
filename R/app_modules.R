@@ -224,171 +224,175 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
 
 #-------------------------------------------SERVER---------------------------------------------------------------------
 
-sh_layout <- function(input, output, session, dataset, UMAP_label, UMAP_colors, assay = "RNA", group_choices = "All") {
-  
-  # only display group choices for dataset that contains anything beyond one choice (e.g.: integrated data)
-  # The element will be shown if the condition evaluates to TRUE and hidden otherwise.
-  observe({
-    shinyjs::toggle(id = "group", condition = !all((group_choices == "All")))
-  })
-  
-  #TODO: provide option to show legend on the side or not at all...
-  output$UMAP <- renderPlot({
-    DimPlot(object = dataset, reduction = "umap", label = TRUE, cols = UMAP_colors,
-            label.size = 5) + NoLegend() + ggtitle(label = UMAP_label)
-  })
-  
-  #------------------------------------------ cluster selection ---------------------------------------------------------
-  
-  #NOTE ignoreNULL = F to ensure that when there is no selection at launch, the user only needs to click on Update gene
-  update_cluster <- eventReactive(input$cluster_selection, {input$cluster},
-                                  ignoreNULL = FALSE)
-  
-  # option to clear or select all checkboxes from clusters
-  
-  observeEvent(input$reset_clusters, {
-    updateCheckboxGroupInput(session, "cluster",
-                             choices = levels(dataset),
-                             selected = NULL)
-  })
-  
-  observeEvent(input$select_all_clusters, {
-    updateCheckboxGroupInput(session, "cluster",
-                             choices = levels(dataset),
-                             selected = levels(dataset))
-  })
-  #-----------------------------------------------------------------------------------------------------------------------
-  
-  update_gene <- eventReactive(input$go, {gene_input_check(input$gene,dataset,assay)})
-  
-  # make plots under reactive to avoid code repetition when saving plots
-  
-  featureplot <- reactive({
-    #change assay as needed for input:
-    
-    if (input$group == "All") {
-      FeaturePlot(object = change_assay(dataset = dataset, assay = assay),
-                  features = update_gene(),
-                  max.cutoff = input$expression,
-                  split.by = NULL)
-    } else {
-      FeaturePlot(object = change_assay(dataset = dataset, assay = assay),
-                  features = update_gene(),
-                  max.cutoff = input$expression,
-                  split.by = input$group)
-    }
-  })
-  
-  output$FeaturePlot <- renderPlot({
-    featureplot()
-  })
-  
-  output$FeaturePlot_downl <- downloadHandler(
-    filename = function() { paste0(gene_input_check(input$gene,dataset,assay),"_FeaturePlot.", input$plot_type) },
-    
-    content = function(file) {
+sh_layout_server <- function(id, dataset, UMAP_label, UMAP_colors, assay = "RNA", group_choices = "All") {
+  moduleServer(
+    id,
+    function(input, output, session) {
       
-      height <- ifelse(input$plot_type == "png", input$png_height, input$pdf_height)
-      width <- ifelse(input$plot_type == "png", input$png_width, input$pdf_width)
+      # only display group choices for dataset that contains anything beyond one choice (e.g.: integrated data)
+      # The element will be shown if the condition evaluates to TRUE and hidden otherwise.
+      observe({
+        shinyjs::toggle(id = "group", condition = !all((group_choices == "All")))
+      })
       
-      plot_save <- featureplot() + labs(caption = caption_label) + theme(plot.caption = element_text(size=18, face="bold"))
+      #TODO: provide option to show legend on the side or not at all...
+      output$UMAP <- renderPlot({
+        DimPlot(object = dataset, reduction = "umap", label = TRUE, cols = UMAP_colors,
+                label.size = 5) + NoLegend() + ggtitle(label = UMAP_label)
+      })
       
-      plot_png_pdf(file_name = file, plot = plot_save, height = height, width = width, image_format = input$plot_type)
+      #------------------------------------------ cluster selection ---------------------------------------------------------
       
+      #NOTE ignoreNULL = F to ensure that when there is no selection at launch, the user only needs to click on Update gene
+      update_cluster <- eventReactive(input$cluster_selection, {input$cluster},
+                                      ignoreNULL = FALSE)
+      
+      # option to clear or select all checkboxes from clusters
+      
+      observeEvent(input$reset_clusters, {
+        updateCheckboxGroupInput(session, "cluster",
+                                 choices = levels(dataset),
+                                 selected = NULL)
+      })
+      
+      observeEvent(input$select_all_clusters, {
+        updateCheckboxGroupInput(session, "cluster",
+                                 choices = levels(dataset),
+                                 selected = levels(dataset))
+      })
+      #-----------------------------------------------------------------------------------------------------------------------
+      
+      update_gene <- eventReactive(input$go, {gene_input_check(input$gene,dataset,assay)})
+      
+      # make plots under reactive to avoid code repetition when saving plots
+      
+      featureplot <- reactive({
+        #change assay as needed for input:
+        
+        if (input$group == "All") {
+          FeaturePlot(object = change_assay(dataset = dataset, assay = assay),
+                      features = update_gene(),
+                      max.cutoff = input$expression,
+                      split.by = NULL)
+        } else {
+          FeaturePlot(object = change_assay(dataset = dataset, assay = assay),
+                      features = update_gene(),
+                      max.cutoff = input$expression,
+                      split.by = input$group)
+        }
+      })
+      
+      output$FeaturePlot <- renderPlot({
+        featureplot()
+      })
+      
+      output$FeaturePlot_downl <- downloadHandler(
+        filename = function() { paste0(gene_input_check(input$gene,dataset,assay),"_FeaturePlot.", input$plot_type) },
+        
+        content = function(file) {
+          
+          height <- ifelse(input$plot_type == "png", input$png_height, input$pdf_height)
+          width <- ifelse(input$plot_type == "png", input$png_width, input$pdf_width)
+          
+          plot_save <- featureplot() + labs(caption = caption_label) + theme(plot.caption = element_text(size=18, face="bold"))
+          
+          plot_png_pdf(file_name = file, plot = plot_save, height = height, width = width, image_format = input$plot_type)
+          
+        }
+      )
+      
+      observeEvent(input$reset, {shinyjs::reset("expression")})
+      
+      violin <- reactive({
+        
+        #evaluate violin options
+        if (input$group != "All") {
+          split_group <- input$group
+        } else {
+          split_group <- NULL
+        }
+        
+        if (input$pt_size == FALSE) {
+          size <- 0
+        } else {
+          size <- NULL # default pt.size
+        }
+        
+        
+        VlnPlot(object = dataset, split.by = split_group,
+                features = update_gene(), idents = update_cluster(),
+                pt.size = size, assay = assay) + NoLegend()
+      })
+      
+      
+      output$Violin <- renderPlot({
+        violin()
+      })
+      
+      
+      output$Violin_downl <- downloadHandler(
+        filename = function() { paste0(gene_input_check(input$gene,dataset,assay),"_Violin.", input$plot_type) },
+        
+        content = function(file) {
+          
+          height <- ifelse(input$plot_type == "png", input$png_height, input$pdf_height)
+          width <- ifelse(input$plot_type == "png", input$png_width, input$pdf_width)
+          
+          plot_save <- violin() + labs(caption = caption_label) + theme(plot.caption = element_text(size=18, face="bold"))
+          
+          plot_png_pdf(file_name = file, plot = plot_save, height = height, width = width, image_format = input$plot_type)
+        }
+      )
+      
+      doplot <- reactive({
+        
+        file_upload <- input$upload
+        ext <- tools::file_ext(file_upload$datapath)
+        
+        req(file_upload)
+        validate(need(ext == "csv", "Please upload a csv file"))
+        
+        # validate entries / checks input csv
+        user_query_upload <- process_upload(input_path = file_upload$datapath,
+                                            header = input$header,
+                                            dataset = dataset,
+                                            assay = assay)
+        
+        #evaluate violin options
+        if (input$group != "All") {
+          split_group <- input$group
+          colors <- col_split
+        } else {
+          split_group <- NULL
+          colors <- colfunc(2)
+        }
+        
+        DotPlot_ordered(dataset = dataset, split_type = split_group,
+                        features = user_query_upload, idents = update_cluster(),
+                        colors = colors, assay = assay)
+      })
+      
+      height_dotplot <- reactive({ifelse(input$group == "All", 1000, 1600)})
+      
+      observe({
+        output$DotPlot <- renderPlot({
+          doplot()
+        }, height = height_dotplot())
+      })
+      
+      output$DotPlot_downl <- downloadHandler(
+        filename = function() { paste0("DotPlot.", input$plot_type) },
+        
+        content = function(file) {
+          
+          height <- ifelse(input$plot_type == "png", input$png_height, input$pdf_height)
+          width <- ifelse(input$plot_type == "png", input$png_width, input$pdf_width)
+          
+          plot_save <- doplot() + labs(caption = caption_label) + theme(plot.caption = element_text(size=18, face="bold"))
+          
+          plot_png_pdf(file_name = file, plot = plot_save, height = height, width = width, image_format = input$plot_type)
+        }
+      )
     }
   )
-  
-  observeEvent(input$reset, {shinyjs::reset("expression")})
-  
-  violin <- reactive({
-    
-    #evaluate violin options
-    if (input$group != "All") {
-      split_group <- input$group
-    } else {
-      split_group <- NULL
-    }
-    
-    if (input$pt_size == FALSE) {
-      size <- 0
-    } else {
-      size <- NULL # default pt.size
-    }
-    
-    
-    VlnPlot(object = dataset, split.by = split_group,
-            features = update_gene(), idents = update_cluster(),
-            pt.size = size, assay = assay) + NoLegend()
-  })
-  
-  
-  output$Violin <- renderPlot({
-    violin()
-  })
-  
-  
-  output$Violin_downl <- downloadHandler(
-    filename = function() { paste0(gene_input_check(input$gene,dataset,assay),"_Violin.", input$plot_type) },
-    
-    content = function(file) {
-      
-      height <- ifelse(input$plot_type == "png", input$png_height, input$pdf_height)
-      width <- ifelse(input$plot_type == "png", input$png_width, input$pdf_width)
-      
-      plot_save <- violin() + labs(caption = caption_label) + theme(plot.caption = element_text(size=18, face="bold"))
-      
-      plot_png_pdf(file_name = file, plot = plot_save, height = height, width = width, image_format = input$plot_type)
-    }
-  )
-  
-  doplot <- reactive({
-    
-    file_upload <- input$upload
-    ext <- tools::file_ext(file_upload$datapath)
-    
-    req(file_upload)
-    validate(need(ext == "csv", "Please upload a csv file"))
-    
-    # validate entries / checks input csv
-    user_query_upload <- process_upload(input_path = file_upload$datapath,
-                                        header = input$header,
-                                        dataset = dataset,
-                                        assay = assay)
-    
-    #evaluate violin options
-    if (input$group != "All") {
-      split_group <- input$group
-      colors <- col_split
-    } else {
-      split_group <- NULL
-      colors <- colfunc(2)
-    }
-    
-    DotPlot_ordered(dataset = dataset, split_type = split_group,
-                    features = user_query_upload, idents = update_cluster(),
-                    colors = colors, assay = assay)
-  })
-  
-  height_dotplot <- reactive({ifelse(input$group == "All", 1000, 1600)})
-  
-  observe({
-    output$DotPlot <- renderPlot({
-      doplot()
-    }, height = height_dotplot())
-  })
-  
-  output$DotPlot_downl <- downloadHandler(
-    filename = function() { paste0("DotPlot.", input$plot_type) },
-    
-    content = function(file) {
-      
-      height <- ifelse(input$plot_type == "png", input$png_height, input$pdf_height)
-      width <- ifelse(input$plot_type == "png", input$png_width, input$pdf_width)
-      
-      plot_save <- doplot() + labs(caption = caption_label) + theme(plot.caption = element_text(size=18, face="bold"))
-      
-      plot_png_pdf(file_name = file, plot = plot_save, height = height, width = width, image_format = input$plot_type)
-    }
-  )
-  
 }
