@@ -21,25 +21,51 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
   
   sidebarLayout(
     sidebarPanel(width = 3,
-                 textInput(inputId = ns("gene"),
-                           label = "Choose a gene", #TODO: make conditional for violin/featureplot
-                           placeholder = "snap25a") %>%
-                   shinyhelper::helper(icon = "info-circle",
-                                       colour ="#232a30",
-                                       type = "markdown",
-                                       content = "Gene_name_help"
-                   ),
-                 
-                 actionButton(inputId = ns("go"),
-                              label = "Update gene!", #TODO: make conditional for violin/featureplot
-                              icon("dna"),
-                              style="color: #ededed; background-color: #232a30"),
-                 
                  checkboxGroupInput(inputId = ns("plots"),
                                     label = "Choose which plot(s) to display",
                                     choices = plot_choices,
                                     selected = c("UMAP","FeaturePlot","Violin"),
                                     inline = TRUE),
+                 conditionalPanel(
+                   condition = "input.plots.indexOf('Violin') > -1 || input.plots.indexOf('FeaturePlot') > -1",
+                   textInput(inputId = ns("gene"),
+                             label = HTML("Violin or FeaturePlot option: <br/> choose a gene"),
+                             placeholder = "snap25a") %>%
+                     shinyhelper::helper(icon = "info-circle",
+                                         colour ="#232a30",
+                                         type = "markdown",
+                                         content = "Gene_name_help"
+                     ),
+                   
+                   actionButton(inputId = ns("go"),
+                                label = "Update gene!",
+                                icon("dna"),
+                                style="color: #ededed; background-color: #232a30"),
+                   hr(),
+                   ns = ns),
+                 
+                 conditionalPanel(
+                   condition = "input.plots.indexOf('DotPlot') > -1",
+                   
+                   fileInput(
+                     inputId = ns("upload"),
+                     label = HTML("DotPlot option: <br/> upload CSV file of gene names"),
+                     multiple = FALSE,
+                     accept = ".csv",
+                     width = "400px"
+                   ) %>%
+                     shinyhelper::helper(
+                       icon = "info-circle",
+                       type = "markdown",
+                       content = "csv_file_info"
+                     ),
+                   
+                   checkboxInput(inputId = ns("header"),
+                                 label = "Indicate if your file has a header",
+                                 value = TRUE),
+                   
+                   hr(),
+                   ns = ns),
                  
                  selectInput(inputId = ns("group"),
                              label = "Choose all or split by age",
@@ -120,31 +146,8 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                    condition = "input.plots.indexOf('Violin') > -1",
                    
                    checkboxInput(inputId = ns("pt_size"), 
-                                 label = "Violin plot option: Display single-cells as points", 
+                                 label = "Violin plot option: display single-cells as points", 
                                  value = FALSE),
-                   
-                   hr(),
-                   ns = ns),
-                 
-                 conditionalPanel(
-                   condition = "input.plots.indexOf('DotPlot') > -1", #TODO: bring this section earlier in page (by gene name)
-                   
-                   fileInput(
-                     inputId = ns("upload"),
-                     label = "Upload CSV file of gene/feature names for DotPlot",
-                     multiple = FALSE,
-                     accept = ".csv",
-                     width = "400px"
-                   ) %>%
-                     shinyhelper::helper(
-                       icon = "info-circle",
-                       type = "markdown",
-                       content = "csv_file_info"
-                     ),
-                   
-                   checkboxInput(inputId = ns("header"),
-                                 label = "Indicate if your file has a header",
-                                 value = TRUE),
                    
                    hr(),
                    ns = ns),
@@ -364,8 +367,8 @@ sh_layout <- function(input, output, session, dataset, UMAP_label, UMAP_colors, 
     }
     
     DotPlot_ordered(dataset = dataset, split_type = split_group,
-            features = user_query_upload, idents = update_cluster(),
-            colors = colors, assay = assay)
+                    features = user_query_upload, idents = update_cluster(),
+                    colors = colors, assay = assay)
   })
   
   #TODO: make height only larger for when we split by
