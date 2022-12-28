@@ -14,7 +14,7 @@ caption_label <- "Source: Summer Thyme Lab"
 
 ##### plots available
 
-all_plots <- c("UMAP","FeaturePlot","Violin")
+all_plots <- c("UMAP","FeaturePlot","Violin", "DotPlot")
 
 sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
   ns <- NS(id)
@@ -22,7 +22,7 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
   sidebarLayout(
     sidebarPanel(width = 3,
                  textInput(inputId = ns("gene"),
-                           label = "Choose a gene",
+                           label = "Choose a gene", #TODO: make conditional for violin/featureplot
                            placeholder = "snap25a") %>%
                    shinyhelper::helper(icon = "info-circle",
                                        colour ="#232a30",
@@ -31,7 +31,7 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                    ),
                  
                  actionButton(inputId = ns("go"),
-                              label = "Update gene!",
+                              label = "Update gene!", #TODO: make conditional for violin/featureplot
                               icon("dna"),
                               style="color: #ededed; background-color: #232a30"),
                  
@@ -123,8 +123,37 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                                  label = "Violin plot option: Display single-cells as points", 
                                  value = FALSE),
                    
+                   hr(),
+                   ns = ns),
+                 
+                 conditionalPanel(
+                   condition = "input.plots.indexOf('DotPlot') > -1", #TODO: bring this section earlier in page (by gene name)
+                   
+                   fileInput(
+                     inputId = ns("upload"),
+                     label = "Upload CSV file of gene/feature names for DotPlot",
+                     multiple = FALSE,
+                     accept = ".csv",
+                     width = "400px"
+                   ) %>%
+                     shinyhelper::helper(
+                       icon = "info-circle",
+                       type = "markdown",
+                       content = "csv_file_info"
+                     ),
+                   
+                   checkboxInput(inputId = ns("header"),
+                                 label = "Indicate if your file has a header",
+                                 value = TRUE),
+                   
+                   hr(),
+                   ns = ns),
+                 
+                 conditionalPanel(
+                   condition = "input.plots.indexOf('Violin') > -1 || input.plots.indexOf('DotPlot') > -1",
+                   
                    checkboxGroupInput(inputId = ns("cluster"),
-                                      label = "Violin plot option: choose all or show specific clusters",
+                                      label = "Violin or DotPlot option: choose all or show specific clusters",
                                       choices = cluster_names,
                                       selected = cluster_names),
                    
@@ -154,7 +183,7 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
     ),
     # downloadButton have their own conditional dependent upon output as well
     # to ensure the button doesn't show up when no gene is selected or if an error is shown
-    mainPanel(width = 9, style = main_panel_style,
+    mainPanel(width = 9, #style = main_panel_style,
               conditionalPanel(
                 condition = "input.plots.indexOf('UMAP') > -1",
                 plotOutput(ns("UMAP")) %>% 
@@ -178,6 +207,15 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                 condition = "output.Violin && input.plots.indexOf('Violin') > -1",
                 downloadButton(ns("Violin_downl"), label = "Download Violin"),
                 ns = ns),
+              conditionalPanel(
+                condition = "input.plots.indexOf('DotPlot') > -1",
+                plotOutput(ns("DotPlot")) %>% 
+                  shinycssloaders::withSpinner(),
+                ns = ns),
+              conditionalPanel(
+                condition = "output.DotPlot && input.plots.indexOf('DotPlot') > -1",
+                downloadButton(ns("DotPlot_downl"), label = "Download DotPlot"),
+                ns = ns)
     )
   )
 }
@@ -301,5 +339,40 @@ sh_layout <- function(input, output, session, dataset, UMAP_label, UMAP_colors, 
       plot_png_pdf(file_name = file, plot = plot_save, height = height, width = width, image_format = input$plot_type)
     }
   )
+  
+  doplot <- reactive({
+    
+    file_upload <- input$upload
+    ext <- tools::file_ext(file_upload$datapath)
+    
+    req(file_upload)
+    validate(need(ext == "csv", "Please upload a csv file"))
+    
+    # validate entries / checks input csv
+    user_query_upload <- process_upload(input_path = file_upload$datapath,
+                                        header = input$header,
+                                        dataset = dataset,
+                                        assay = assay)
+    
+    #evaluate violin options
+    if (input$group != "All") {
+      split_group <- input$group
+      colors <- col_split
+    } else {
+      split_group <- NULL
+      colors <- colfunc(2)
+    }
+    
+    DotPlot_ordered(dataset = dataset, split_type = split_group,
+            features = user_query_upload, idents = update_cluster(),
+            colors = colors, assay = assay)
+  })
+  
+  #TODO: make height only larger for when we split by
+  output$DotPlot <- renderPlot({
+    doplot()
+  }, height = 2000)
+  
+  #TODO: add download for dotplot
   
 }
