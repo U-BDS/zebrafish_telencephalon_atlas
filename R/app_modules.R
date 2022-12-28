@@ -1,20 +1,18 @@
 # app modules
-#-----------------------------------------global UI options------------------------------------------
+#-----------------------------------------global UI options---------------------------------------------------
 options(spinner.type=1,spinner.color="#232a30", spinner.size=2)
 
-#-------------------------------------------UI-----------------------------------------------------
-
-##### group choices
-
-# adult group choices
+#-----------------------------------------other UI variables--------------------------------------------------
+# integrated group choices
 integrated_groups <- c("All", "age") #all other is just "All"
 
 # footer of saved figs
 caption_label <- "Source: Summer Thyme Lab"
 
-##### plots available
-
+# plots available
 all_plots <- c("UMAP","FeaturePlot","Violin", "DotPlot")
+
+#-------------------------------------------UI-----------------------------------------------------------------
 
 sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
   ns <- NS(id)
@@ -212,7 +210,7 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                 ns = ns),
               conditionalPanel(
                 condition = "input.plots.indexOf('DotPlot') > -1",
-                plotOutput(ns("DotPlot")) %>% 
+                plotOutput(ns("DotPlot"), height = "95%") %>% # set height for custom height in server
                   shinycssloaders::withSpinner(),
                 ns = ns),
               conditionalPanel(
@@ -224,7 +222,7 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
 }
 
 
-#-------------------------------------------SERVER-----------------------------------------------------
+#-------------------------------------------SERVER---------------------------------------------------------------------
 
 sh_layout <- function(input, output, session, dataset, UMAP_label, UMAP_colors, assay = "RNA", group_choices = "All") {
   
@@ -371,11 +369,26 @@ sh_layout <- function(input, output, session, dataset, UMAP_label, UMAP_colors, 
                     colors = colors, assay = assay)
   })
   
-  #TODO: make height only larger for when we split by
-  output$DotPlot <- renderPlot({
-    doplot()
-  }, height = 2000)
+  height_dotplot <- reactive({ifelse(input$group == "All", 1000, 1600)})
   
-  #TODO: add download for dotplot
+  observe({
+    output$DotPlot <- renderPlot({
+      doplot()
+    }, height = height_dotplot())
+  })
+  
+  output$DotPlot_downl <- downloadHandler(
+    filename = function() { paste0("DotPlot.", input$plot_type) },
+    
+    content = function(file) {
+      
+      height <- ifelse(input$plot_type == "png", input$png_height, input$pdf_height)
+      width <- ifelse(input$plot_type == "png", input$png_width, input$pdf_width)
+      
+      plot_save <- doplot() + labs(caption = caption_label) + theme(plot.caption = element_text(size=18, face="bold"))
+      
+      plot_png_pdf(file_name = file, plot = plot_save, height = height, width = width, image_format = input$plot_type)
+    }
+  )
   
 }
