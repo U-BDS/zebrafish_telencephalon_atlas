@@ -332,8 +332,10 @@ sh_layout_server <- function(id, dataset, UMAP_label, UMAP_colors, assay = "RNA"
         #evaluate violin options
         if (input$group != "All") {
           split_group <- input$group
+          colors <- col_split
         } else {
           split_group <- NULL
+          colors <- NULL
         }
         
         if (input$pt_size == FALSE) {
@@ -345,7 +347,7 @@ sh_layout_server <- function(id, dataset, UMAP_label, UMAP_colors, assay = "RNA"
         
         VlnPlot(object = dataset, split.by = split_group,
                 features = update_gene(), idents = update_cluster(),
-                pt.size = size, assay = assay) + NoLegend()
+                pt.size = size, assay = assay, cols = colors) + NoLegend()
       })
       
       
