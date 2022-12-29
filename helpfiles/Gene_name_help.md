@@ -1,4 +1,5 @@
 ### Gene name search
+___
 
 Gene names entered in the search box are automatically converted to the zebrafish nomenclature (e.g.: `SNAP25A`, or `Snap25a`, are all read by the app as `snap25a`).
 

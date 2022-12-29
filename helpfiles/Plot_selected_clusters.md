@@ -1,4 +1,5 @@
 ### Cluster selection (Violin and DotPlot)
+___
 
 __NOTE__: by default all clusters are selected. If you choose to select specific clusters to subset the plot, please __click `Plot selected clusters`__ to update the current plot to visualize only selected clusters.
 
