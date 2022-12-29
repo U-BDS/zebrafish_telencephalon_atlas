@@ -20,9 +20,6 @@ gene_input_check <- function(user_gene, dataset, assay = assay) {
   # first ensure the correct assay is selected under each mode
   dataset <- change_assay(dataset = dataset, assay = assay)
   
-  # remove any empty spaces if present (since gene names don't have that)
-  user_gene <- gsub(" ","",user_gene, fixed = TRUE)
-  
   # ensure that the input is not empty
   validate(
     need(nchar(user_gene) > 0,
@@ -51,6 +48,9 @@ gene_input_check <- function(user_gene, dataset, assay = assay) {
     }
     
   } else {
+    
+    # remove any empty spaces if present
+    user_gene <- gsub(" ","",user_gene, fixed = TRUE)
     
     # convert any input gene to zebrafish nomeclature
     user_gene <- tolower(user_gene)
