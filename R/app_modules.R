@@ -24,6 +24,20 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                                     choices = plot_choices,
                                     selected = c("UMAP","FeaturePlot","Violin"),
                                     inline = TRUE),
+                 hr(),
+                 conditionalPanel(
+                   condition = "input.plots.indexOf('UMAP') > -1",
+                   
+                   checkboxInput(inputId = ns("umap_label"),
+                                 label = "Display UMAP label",
+                                 value = TRUE),
+                   
+                   checkboxInput(inputId = ns("umap_legend"),
+                                 label = "Display UMAP legend",
+                                 value = FALSE),
+                   hr(),
+                   ns = ns),
+                 
                  conditionalPanel(
                    condition = "input.plots.indexOf('Violin') > -1 || input.plots.indexOf('FeaturePlot') > -1",
                    textInput(inputId = ns("gene"),
@@ -235,10 +249,20 @@ sh_layout_server <- function(id, dataset, UMAP_label, UMAP_colors, assay = "RNA"
         shinyjs::toggle(id = "group", condition = !all((group_choices == "All")))
       })
       
-      #TODO: provide option to show legend on the side or not at all...
       output$UMAP <- renderPlot({
-        DimPlot(object = dataset, reduction = "umap", label = TRUE, cols = UMAP_colors,
-                label.size = 5) + NoLegend() + ggtitle(label = UMAP_label)
+        if (input$umap_legend == TRUE) {
+          DimPlot(object = dataset,
+                 reduction = "umap",
+                 label = input$umap_label,
+                 cols = UMAP_colors,
+                 label.size = 5) + ggtitle(label = UMAP_label)
+        } else {
+          DimPlot(object = dataset,
+                  reduction = "umap",
+                  label = input$umap_label,
+                  cols = UMAP_colors,
+                  label.size = 5) + NoLegend() + ggtitle(label = UMAP_label)
+        }
       })
       
       #------------------------------------------ cluster selection ---------------------------------------------------------
