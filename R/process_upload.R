@@ -32,11 +32,22 @@ process_upload <- function(input_path, header = TRUE, ...) {
   
   user_query_upload <- unique(user_query_upload)
   
+  # setting a max number of genes for DotPlot to a sensible default.
+  # for users with very small screens, they still have the option 
+  # of saving the plot on larger size
+  validate(
+    need(nrow(user_query_upload) <= 60,
+         message = paste0(
+           "Input number of genes/features is greater than 60! The maximun number of features ",
+           "has been set to 60 as a sensible default for DotPlots. Please reduce your input to ",
+           "60 genes/features at a time."
+         )
+    )
+  )
+  
   # validate entries (convert to lowercase when needed or ignore if inside "")
   
   user_query_upload <- as.character(apply(user_query_upload, MARGIN = 1, FUN = gene_input_check, ...))
-  
-  #TODO: add max number to a reasonable amount to be visualized within a dotplot
   
   return(user_query_upload)
 }
