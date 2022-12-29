@@ -7,13 +7,12 @@ library(ggplot2)
 library(markdown)
 library(shinyhelper)
 library(dplyr)
+library(bslib)
 
 #--------------------------custom functions---------------------------------------------------
 lapply(list.files("./R"), FUN = function(x) source(paste0("./R/", x)))
 
 #--------------------------global objects/variables-----------------------------------------------------
-#main_panel_style <- "overflow-y:scroll; max-height: 1250px; max-width: 1100px; border-top: solid; border-bottom: solid; border-color: #e8e8e8"
-
 #NOTE: due to simplicity just keeping simple/separate vectors, if needed will mapply all this
 # scRNA-seq datasets
 forebrain_integrated <- readRDS(file = "./data/forebrain_integrated_lean.rds")

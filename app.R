@@ -2,15 +2,13 @@
 
 source("./global.R")
 
-#TODO: check in about plot order on cluster names (are obj. levels sufficient?)
-
 #----------------------- app -------------------------------
 ui <- function(){
   
   bootstrapPage("",
                 useShinyjs(),
                 navbarPage(title = "Maturing Zebrafish Telencephalon Atlas", #TODO: check-in on any name changes
-                           inverse = TRUE,
+                           theme = bslib::bs_theme(version = 5, bootswatch = "cosmo", primary = "#00651D"),
                            home_description,
                            tabPanel(title = "Integrated Telencephalon",
                                     sh_layout_UI(id = "integrated",
@@ -41,11 +39,20 @@ ui <- function(){
                                     )
                            ),
                 ),
+                tags$style(HTML(".irs--shiny .irs-bar {
+                                background: #00651D;
+                                border-top: 1px solid #00651D;
+                                border-bottom: 1px solid #00651D;
+                                }
+                                .irs--shiny .irs-to, .irs--shiny .irs-from {
+                                background-color: #00651D;
+                                }
+                                .irs--shiny .irs-single {
+                                background: #00651D;
+                                }")),
                 tags$head(
                   tags$style(HTML(".shiny-output-error-validation {
-                color: black;
-                                }")))
-  )
+                                  color: black;}"))))
 }
 
 # Reminder: objects inside server function are instantiated per session...

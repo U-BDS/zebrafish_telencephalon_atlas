@@ -1,6 +1,6 @@
 # app modules
 #-----------------------------------------global UI options---------------------------------------------------
-options(spinner.type=1,spinner.color="#232a30", spinner.size=2)
+options(spinner.type=1,spinner.color="#00651D", spinner.size=2)
 
 #-----------------------------------------other UI variables--------------------------------------------------
 # integrated group choices
@@ -44,15 +44,15 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                              label = HTML("Violin or FeaturePlot option: <br/> choose a gene"),
                              placeholder = "snap25a") %>%
                      shinyhelper::helper(icon = "info-circle",
-                                         colour ="#232a30",
+                                         colour ="#00651D",
                                          type = "markdown",
                                          content = "Gene_name_help"
                      ),
                    
                    actionButton(inputId = ns("go"),
                                 label = "Update gene!",
-                                icon("dna"),
-                                style="color: #ededed; background-color: #232a30"),
+                                icon("dna")
+                   ),
                    hr(),
                    ns = ns),
                  
@@ -68,6 +68,7 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                    ) %>%
                      shinyhelper::helper(
                        icon = "info-circle",
+                       colour ="#00651D",
                        type = "markdown",
                        content = "csv_file_info"
                      ),
@@ -142,15 +143,15 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                                 value = NA,
                                 min = 0) %>%
                      shinyhelper::helper(icon = "exclamation-circle",
-                                         colour ="#232a30",
+                                         colour ="#00651D",
                                          type = "markdown",
                                          content = "Featureplot_cutoff_help"
                      ),
                    
                    actionButton(inputId = ns("reset"),
                                 label = "Reset scale",
-                                icon("redo"),
-                                style="color: #ededed; background-color: #232a30"),
+                                icon("redo")
+                   ),
                    hr(),
                    ns = ns),
                  
@@ -174,31 +175,30 @@ sh_layout_UI <- function(id, group_choices, plot_choices, cluster_names) {
                    
                    actionButton(inputId = ns("cluster_selection"),
                                 label = "Plot selected clusters",
-                                icon("check"),
-                                style="color: #ededed; background-color: #232a30") %>%
+                                icon("check")
+                   ) %>%
                      shinyhelper::helper(icon = "info-circle",
-                                         colour ="#232a30",
+                                         colour ="#00651D",
                                          type = "markdown",
                                          content = "Plot_selected_clusters"
                      ),
                    
                    actionButton(inputId = ns("reset_clusters"),
                                 label = "Clear all cluster choices",
-                                icon("redo"),
-                                style="color: #ededed; background-color: #232a30"),
+                                icon("redo")
+                   ),
                    
                    actionButton(inputId = ns("select_all_clusters"),
                                 label = "Check all cluster choices",
-                                icon("check-double"),
-                                style="color: #ededed; background-color: #232a30"),
-                   
+                                icon("check-double")
+                   ),
                    hr(),
                    ns = ns),
                  
     ),
     # downloadButton have their own conditional dependent upon output as well
     # to ensure the button doesn't show up when no gene is selected or if an error is shown
-    mainPanel(width = 9, #style = main_panel_style,
+    mainPanel(width = 9,
               conditionalPanel(
                 condition = "input.plots.indexOf('UMAP') > -1",
                 plotOutput(ns("UMAP")) %>% 
