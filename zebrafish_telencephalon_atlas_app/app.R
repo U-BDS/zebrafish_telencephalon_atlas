@@ -37,7 +37,7 @@ ui <- function(){
                                                  plot_choices = all_plots,
                                                  cluster_names = cluster_names_adult
                                     )
-                           ),
+                           )
                 ),
                 tags$style(HTML(".irs--shiny .irs-bar {
                                 background: #00651D;
