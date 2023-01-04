@@ -16,7 +16,7 @@ lapply(list.files("./R"), FUN = function(x) source(paste0("./R/", x)))
 #NOTE: due to simplicity just keeping simple/separate vectors, if needed will mapply all this
 # scRNA-seq datasets
 forebrain_integrated <- readRDS(file = "./data/forebrain_integrated_lean.rds")
-dpf6 <- readRDS(file = "./data/dpf6_lean.rds") 
+dpf6 <- readRDS(file = "./data/dpf6_lean.rds")
 dpf15 <- readRDS(file = "./data/dpf15_lean.rds")
 adult <- readRDS(file = "./data/adult_lean.rds")
 

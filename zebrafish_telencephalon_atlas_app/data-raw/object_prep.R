@@ -54,7 +54,7 @@ forebrain_integrated_lean <- DietSeurat(forebrain.integrated, counts = FALSE, da
                                         assay = c("RNA","integrated"), dimreducs = c("pca","umap"))
 
 # save as new RDS objects
-saveRDS(forebrain_integrated_lean, file = "./data/forebrain_integrated_lean.rds") 
+saveRDS(forebrain_integrated_lean, file = "./data/forebrain_integrated_lean.rds", compress = FALSE) 
 
 ############## dpf6 OBJECT #################
 # levels / order in age-specific objects are seurat clusters
@@ -88,7 +88,7 @@ dpf6_lean <- DietSeurat(dpf6, counts = FALSE, data = TRUE, scale.data = FALSE,
                         assay = c("RNA","integrated"), dimreducs = c("pca","umap"))
 
 # save as new RDS objects
-saveRDS(dpf6_lean, file = "./data/dpf6_lean.rds") 
+saveRDS(dpf6_lean, file = "./data/dpf6_lean.rds", compress = FALSE) 
 
 ############## df15 OBJECT #################
 # levels / order in age-specific objects are seurat clusters
@@ -120,7 +120,7 @@ dpf15_lean <- DietSeurat(dpf15, counts = FALSE, data = TRUE, scale.data = FALSE,
                         assay = c("RNA","integrated"), dimreducs = c("pca","umap"))
 
 # save as new RDS objects
-saveRDS(dpf15_lean, file = "./data/dpf15_lean.rds") 
+saveRDS(dpf15_lean, file = "./data/dpf15_lean.rds", compress = FALSE) 
 
 ############## adult OBJECT #################
 # levels / order in age-specific objects are seurat clusters
@@ -155,4 +155,4 @@ adult_lean <- DietSeurat(ADULT, counts = FALSE, data = TRUE, scale.data = FALSE,
                          assay = c("RNA","integrated"), dimreducs = c("pca","umap"))
 
 # save as new RDS objects
-saveRDS(adult_lean, file = "./data/adult_lean.rds") 
+saveRDS(adult_lean, file = "./data/adult_lean.rds", compress = FALSE) 

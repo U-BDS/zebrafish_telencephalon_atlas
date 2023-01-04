@@ -3,13 +3,6 @@ FROM rocker/shiny-verse:4.2.2
 LABEL maintainer="Lara Ianov <lianov@uab.edu>"
 LABEL description="Dockerized zebrafish telencephalon atlas app"
 
-# this container will already have the app with the data
-# to make launching the app as straight-forward as possible since
-# we are not hosting the app in an external server.
-# Mounting being the alternative and more common, but attempting to avoid
-# multiple steps for users (to have to download data separately...)
-COPY ./zebrafish_telencephalon_atlas_app /srv/shiny-server/zebrafish_telencephalon_atlas_app
-
 #ignores conda install prompt from reticulate to keep log cleaner
 COPY ./.Renviron /home/shiny/.Renviron
 
@@ -58,6 +51,14 @@ RUN sudo chown -R shiny:shiny /var/log/shiny-server/
 # remove sample index and apps:
 RUN sudo rm /srv/shiny-server/index.html
 RUN sudo rm -rf /srv/shiny-server/sample-apps
+
+# this container will already have the app with the data
+# to make launching the app as straight-forward as possible since
+# we are not hosting the app in an external server.
+# Mounting being the alternative and more common, but attempting to avoid
+# multiple steps for users (to have to download data separately...)
+COPY ./zebrafish_telencephalon_atlas_app /srv/shiny-server/
+
 #exec form for wildcards...
 RUN ["/bin/bash", "-c", "sudo rm -rf /srv/shiny-server/{0*,1*}_*"]
 
