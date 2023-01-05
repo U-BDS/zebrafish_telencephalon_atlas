@@ -3,6 +3,7 @@
 source("./global.R")
 
 #----------------------- app -------------------------------
+message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Initializing UI."))
 ui <- function(){
   
   bootstrapPage("",
@@ -54,7 +55,9 @@ ui <- function(){
                   tags$style(HTML(".shiny-output-error-validation {
                                   color: black;}"))))
 }
+message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: UI Initialized."))
 
+message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Initializing Session."))
 # Reminder: objects inside server function are instantiated per session...
 server <- function(input, output) {
   
@@ -85,5 +88,6 @@ server <- function(input, output) {
                     group_choices = "All")
 
 }
+message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Session Initialized."))
 
 shinyApp(ui = ui, server = server)

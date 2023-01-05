@@ -52,6 +52,10 @@ RUN sudo chown -R shiny:shiny /var/log/shiny-server/
 RUN sudo rm /srv/shiny-server/index.html
 RUN sudo rm -rf /srv/shiny-server/sample-apps
 
+# Set environment variable to allow shiny server code to output to
+# STDOUT and STDERR
+ENV SHINY_LOG_STDERR=1
+
 # this container will already have the app with the data
 # to make launching the app as straight-forward as possible since
 # we are not hosting the app in an external server.
