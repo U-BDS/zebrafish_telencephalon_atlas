@@ -8,7 +8,7 @@ ui <- function(){
   
   bootstrapPage("",
                 useShinyjs(),
-                navbarPage(title = "Maturing Zebrafish Telencephalon Atlas", #TODO: check-in on any name changes
+                navbarPage(title = "Maturing Zebrafish Telencephalon Atlas",
                            theme = bslib::bs_theme(version = 5, bootswatch = "cosmo", primary = "#00651D"),
                            home_description,
                            tabPanel(title = "Integrated Telencephalon",

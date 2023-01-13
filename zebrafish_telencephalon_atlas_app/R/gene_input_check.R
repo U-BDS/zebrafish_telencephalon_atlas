@@ -4,19 +4,19 @@
 #' typing feature name inside double quotes to search for features which do not yet follow standard nomenclature. 
 #' @param user_gene Gene/Feature name
 #' @param dataset A Seurat object
-#' @param assay Assay within the Seurat object to search gene/features
+#' @param assay Assay within the Seurat object to search gene/features. Default is  "RNA"
 #'
-#' @return
+#' @return Feature name
 #' @export
 #'
 #' @examples
-#' #' \dontrun{
+#' \dontrun{
 #' gene_input_check(user_gene = 'snap25a', dataset = input_obj, assay = 'RNA')
 #' }
-#' #' #' \dontrun{
+#' \dontrun{
 #' gene_input_check(user_gene = '"TMEM229A"', dataset = input_obj, assay = 'RNA') #does not convert to lowercase
 #' }
-gene_input_check <- function(user_gene, dataset, assay = assay) {
+gene_input_check <- function(user_gene, dataset, assay = "RNA") {
   # first ensure the correct assay is selected under each mode
   dataset <- change_assay(dataset = dataset, assay = assay)
   

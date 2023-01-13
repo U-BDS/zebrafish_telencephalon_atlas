@@ -11,7 +11,7 @@
 
 More information about the Thyme lab can be found at <https://www.thymelab.org/>
 
-This app was developed and is actively maintained by Lara Ianov, Ph.D., Managing Director of the [UAB Biological Data Science Core](https://www.uab.edu/cores/ircp/bds), and bioinformatics specialist for the Civitan International Research Center, at the University of Alabama at Birmingham. For questions about the app, please send an to lianov@uab.edu
+This app was developed and is actively maintained by Lara Ianov, Ph.D., Managing Director of the [UAB Biological Data Science Core](https://www.uab.edu/cores/ircp/bds), and bioinformatics specialist for the Civitan International Research Center, at the University of Alabama at Birmingham. For questions or issues about the app about the app, please submit an issue to the [GitHub repository](https://github.com/U-BDS/zebrafish_telencephalon_atlas).
 
 ### FAQs:
 
