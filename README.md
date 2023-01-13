@@ -2,7 +2,19 @@
 A R Shiny app of the transcriptome atlas of the maturing zebrafish telencephalon
 
 <!-- TODO: ### Citation [once link is available] -->
-<!-- TODO: Add sample figures of the app -->
+## App overview
+
+The app provides a user-friendly approach to explore the single-cell data from the maturing zebrafish telencephalon across the 6dpf, 15dpf and adult ages (integrated and individual age-specific datasets). The general functionality of the app includes:
+
+* Searchable browser for genes/features to be plotted as violin plots and feature plots.
+* Dot plots of features (maximum number of features set to 60 as a sensible default linked to width of the plot)
+* User choices to split the integrated dataset per age, download figures (png/pdf) and plot a subset of clusters of interest.
+
+An overview of the tab which contains the integrated dataset (split per age) can be seen below:
+
+<img src="./figs/overview.png" align="center" width="850px" />
+
+<br>
 
 # App deployment with Docker
 
@@ -10,7 +22,7 @@ The app, along with all dependencies have been containerized with Docker and is 
 
 Overall, the user needs to 1. install Docker 2. [follow the instructions below for deployment](#deploy-app-locally).
 
-> :warning: **NOTE for Windows users**: please ensure you install Docker with admin privileges (`Run as administrator` option) and have the WSL 2 Linux Kernel installed. [See more directions on Docker for Windows in the docs](https://docs.docker.com/desktop/install/windows-install/).
+> :warning: **NOTE for Windows users**: please ensure you install Docker with admin privileges (`Run as administrator` option) and have the WSL 2 Linux Kernel installed. [See more directions on Docker for Windows in the docs](https://docs.docker.com/desktop/install/windows-install/). General familiarity with setting Docker resources is strongly encouraged - e.g.: `.wslconfig` file and use of the `docker run -m` flag to set memory limit (`-m 6000m`)
 
 > :warning: **NOTE for Mac users with M1 chip**: rocker/rstudio images do not currently work with arm Macs/Macs with the M1 chip. This is a [known issue from the rocker group](https://github.com/rocker-org/rocker-versioned2/issues/144) and is expected to be solved in 2023. We are actively watching this issue and will update the Docker image once it is fixed. Macs without the M1 chips work perfectly fine.
 ## Deploy app locally
