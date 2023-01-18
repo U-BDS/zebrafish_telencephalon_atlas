@@ -18,7 +18,7 @@ An overview of the tab which contains the integrated dataset (split per age) can
 
 # App deployment with Docker
 
-The app, along with all dependencies have been containerized with Docker and is hosted in the following Docker Hub repository: <https://hub.docker.com/repository/docker/uabbds/zebrafish_telencephalon_atlas_app>
+The app, along with all dependencies have been containerized with Docker and is hosted in the following Docker Hub repository: <https://hub.docker.com/r/uabbds/zebrafish_telencephalon_atlas_app>
 
 Overall, the user needs to 1. install Docker 2. [follow the instructions below for deployment](#deploy-app-locally).
 
