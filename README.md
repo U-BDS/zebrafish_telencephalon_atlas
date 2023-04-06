@@ -63,3 +63,7 @@ Open your browser, and go to the following localhost <http://localhost:3838> . L
 ```
 
 Further, a copy of the log can also be found in the current working directory which should be  mounted in the `docker run` command displayed above. If an issue is found, please inspect the log file (file with pattern `shiny-server-shiny-*.log`)
+
+# Citation
+
+Genome Research DOI: 10.1101/gr.277278.122
