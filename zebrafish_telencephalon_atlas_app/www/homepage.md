@@ -1,17 +1,17 @@
 # A single-cell transcriptome atlas of the maturing zebrafish telencephalon
 
+This web app hosts the datasets associated with the following publication from the Thyme lab:
 
-> **_TODO:_**  [Thyme lab to provide] - brief overview of datasets / experiment and any other homepage info.
+> Shristi Pandey, Anna J. Moyer and Summer B. Thyme. (Genome Research, April, 2023). [_A single-cell transcriptome atlas of the maturing zebrafish telencephalon_](https://doi.org/10.1101/gr.277278.122)  DOI: <https://doi.org/10.1101/gr.277278.122>
+
+This app was developed by Lara Ianov, Ph.D., Managing Director of the [UAB Biological Data Science Core](https://www.uab.edu/cores/ircp/bds), and bioinformatics specialist for the Civitan International Research Center, at the University of Alabama at Birmingham. For questions or issues about the app about the app, please submit an issue to the [GitHub repository](https://github.com/U-BDS/zebrafish_telencephalon_atlas).
 
 ----
-
-<!-- TODO: ### Citation [once link is available] -->
 
 ### Resources:
 
 More information about the Thyme lab can be found at <https://www.thymelab.org/>
 
-This app was developed and is actively maintained by Lara Ianov, Ph.D., Managing Director of the [UAB Biological Data Science Core](https://www.uab.edu/cores/ircp/bds), and bioinformatics specialist for the Civitan International Research Center, at the University of Alabama at Birmingham. For questions or issues about the app about the app, please submit an issue to the [GitHub repository](https://github.com/U-BDS/zebrafish_telencephalon_atlas).
 
 ### FAQs:
 
