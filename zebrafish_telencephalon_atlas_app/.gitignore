@@ -6,6 +6,5 @@
 .Rproj.user
 .bash_history
 .local
-*.log
+shiny_app_logs/*.log
 *.Rprofvis
-zebrafish_telencephalon_atlas_app/app_cache/*
