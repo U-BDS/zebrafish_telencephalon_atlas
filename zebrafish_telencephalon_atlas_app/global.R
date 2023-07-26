@@ -2,6 +2,7 @@
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Loading packages."))
 
 library(Seurat)
+library(BPCells)
 library(cowplot)
 library(shiny)
 library(shinyjs)
@@ -10,6 +11,8 @@ library(markdown)
 library(shinyhelper)
 library(dplyr)
 library(bslib)
+
+options(Seurat.object.assay.version = "v5")
 
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: All packages loaded."))
 
@@ -20,16 +23,16 @@ lapply(list.files("./R"), FUN = function(x) source(paste0("./R/", x)))
 #NOTE: due to simplicity just keeping simple/separate vectors, if needed will mapply all this
 # scRNA-seq datasets
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Reading in integrated forebrain RDS."))
-forebrain_integrated <- readRDS(file = "./data/forebrain_integrated_lean.rds")
+forebrain_integrated <- readRDS(file = "./data/on_disk/forebrain_integrated/forebrain_integrated_assay5.rds")
 
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Reading in dpf6 RDS."))
-dpf6 <- readRDS(file = "./data/dpf6_lean.rds")
+dpf6 <- readRDS(file = "./data/on_disk/dpf6/dpf6_assay5.rds")
 
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Reading in dpf15 RDS."))
-dpf15 <- readRDS(file = "./data/dpf15_lean.rds")
+dpf15 <- readRDS(file = "./data/on_disk/dpf15/dpf15_assay5.rds")
 
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Reading in adult RDS."))
-adult <- readRDS(file = "./data/adult_lean.rds")
+adult <- readRDS(file = "./data/on_disk/adult/adult_assay5.rds")
 
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: All RDS data has been loaded."))
 

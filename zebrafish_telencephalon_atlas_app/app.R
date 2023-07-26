@@ -58,6 +58,7 @@ ui <- function(){
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: UI Initialized."))
 
 message(paste(format(Sys.time(), "(%Y-%m-%d %H:%M:%S %Z)"), "LOG: Initializing Session."))
+
 # Reminder: objects inside server function are instantiated per session...
 server <- function(input, output) {
   

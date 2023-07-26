@@ -39,7 +39,7 @@ gene_input_check <- function(user_gene, dataset, assay = "RNA") {
     if (DefaultAssay(dataset) == "RNA") {
       
       validate(
-        need(user_gene %in% rownames(dataset@assays$RNA@data),
+        need(user_gene %in% rownames(dataset@assays$RNA$data),
              message = paste0("The gene name ", user_gene, " was not found in the dataset"))
       )
       
@@ -58,7 +58,7 @@ gene_input_check <- function(user_gene, dataset, assay = "RNA") {
     if ("RNA" %in% Assays(dataset)) {
       
       validate(
-        need(user_gene %in% rownames(dataset@assays$RNA@data),
+        need(user_gene %in% rownames(dataset@assays$RNA$data),
              message = paste0("The gene name ", user_gene, " was not found in the dataset"))
       )
       
